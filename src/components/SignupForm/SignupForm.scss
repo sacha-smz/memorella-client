@@ -1,0 +1,23 @@
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h1 {
+    margin-bottom: 0.6em;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    .MuiTextField-root {
+      margin-bottom: 0.6em;
+      min-width: 300px;
+    }
+
+    .MuiButton-root {
+      margin: 0.4em auto 0;
+    }
+  }
+}
