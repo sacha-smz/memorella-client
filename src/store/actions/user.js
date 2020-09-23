@@ -5,7 +5,10 @@ export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const signupSuccess = payload => ({ type: SIGNUP_SUCCESS, payload });
 
 export const SIGNUP_ERROR = "SIGNUP_ERROR";
-export const signupError = err => ({ type: SIGNUP_ERROR, payload: err });
+export const signupError = payload => ({ type: SIGNUP_ERROR, payload });
 
 export const CLEAR_SIGNUP_ERROR = "CLEAR_SIGNUP_ERROR";
 export const clearSignupError = () => ({ type: CLEAR_SIGNUP_ERROR });
+
+export const LOGOUT = "LOGOUT";
+export const logout = () => ({ type: LOGOUT });

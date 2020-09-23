@@ -1,7 +1,6 @@
-import { createStore, applyMiddleware } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { createStore } from "redux";
 
-import reducer from "./reducers";
-import userMiddleware from "./middlewares/user";
+import reducers from "./reducers";
+import middlewares from "./middlewares";
 
-export default createStore(reducer, composeWithDevTools(applyMiddleware(userMiddleware)));
+export default createStore(reducers, middlewares);

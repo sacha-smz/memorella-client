@@ -1,8 +1,8 @@
 import http from "../../utils/http";
 
-import { signupSuccess, signupError, SIGNUP_FORM_SUBMIT } from "../actions/user";
+import { signupSuccess, signupError, SIGNUP_FORM_SUBMIT, LOGOUT } from "../actions/user";
 
-export default store => next => async action => {
+export default _ => next => async action => {
   switch (action.type) {
     case SIGNUP_FORM_SUBMIT:
       try {
@@ -11,6 +11,16 @@ export default store => next => async action => {
       } catch (err) {
         next(signupError(err));
         console.error(err);
+      }
+      break;
+    case LOGOUT:
+      try {
+        const token = action.payload && action.payload.token;
+        await http.post("/auth/logout", { token });
+      } catch (err) {
+        console.error(err);
+      } finally {
+        next(action);
       }
       break;
     default:

@@ -5,6 +5,11 @@ const http = {
     options.url = process.env.REACT_APP_API_URL + url;
     options.method = options.method || "GET";
 
+    if (options.token) {
+      options.headers = options.headers || {};
+      options.headers.Authorization = "Bearer " + options.token;
+    }
+
     try {
       const response = await axios(options);
       return response.data;

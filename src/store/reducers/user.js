@@ -1,4 +1,4 @@
-import { SIGNUP_SUCCESS, SIGNUP_ERROR, CLEAR_SIGNUP_ERROR } from "../actions/user";
+import { SIGNUP_SUCCESS, SIGNUP_ERROR, CLEAR_SIGNUP_ERROR, LOGOUT } from "../actions/user";
 
 const initialState = {
   data: null,
@@ -13,6 +13,8 @@ export default (state = initialState, action = {}) => {
       return { ...state, signupError: { ...action.payload } };
     case CLEAR_SIGNUP_ERROR:
       return { ...state, signupError: null };
+    case LOGOUT:
+      return { ...state, data: null };
     default:
       return state;
   }
