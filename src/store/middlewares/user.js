@@ -1,6 +1,14 @@
 import http from "../../utils/http";
 
-import { signupSuccess, signupError, SIGNUP_FORM_SUBMIT, LOGOUT } from "../actions/user";
+import {
+  signupSuccess,
+  signupError,
+  signinSuccess,
+  signinError,
+  SIGNUP_FORM_SUBMIT,
+  SIGNIN_FORM_SUBMIT,
+  LOGOUT
+} from "../actions/user";
 
 export default _ => next => async action => {
   switch (action.type) {
@@ -10,7 +18,15 @@ export default _ => next => async action => {
         next(signupSuccess(response.data));
       } catch (err) {
         next(signupError(err));
-        console.error(err);
+      }
+      break;
+    case SIGNIN_FORM_SUBMIT:
+      try {
+        const response = await http.post("/auth/login", { data: action.payload });
+        const { accessToken: access, refreshToken: refresh, ...data } = response.data;
+        next(signinSuccess({ access, refresh, data }));
+      } catch (err) {
+        next(signinError(err));
       }
       break;
     case LOGOUT:

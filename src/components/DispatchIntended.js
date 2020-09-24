@@ -1,10 +1,6 @@
-import React, { useEffect } from "react";
-
 const DispatchIntended = ({ dispatchIntended }) => {
-  useEffect(() => {
-    dispatchIntended();
-  }, [dispatchIntended]);
-  return <></>;
+  dispatchIntended();
+  return null;
 };
 
 export default DispatchIntended;

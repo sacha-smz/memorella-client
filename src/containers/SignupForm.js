@@ -5,7 +5,7 @@ import { signupFormSubmit, clearSignupError } from "../store/actions/user";
 
 import SignupForm from "../components/SignupForm";
 
-const mapStateToprops = state => ({ user: getUserWithAlerts(state) });
+const mapStateToprops = state => ({ user: getUserWithAlerts("signup")(state) });
 const mapDispatchToProps = { signupFormSubmit, clearSignupError };
 
 export default connect(mapStateToprops, mapDispatchToProps)(SignupForm);

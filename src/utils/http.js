@@ -14,8 +14,8 @@ const http = {
       const response = await axios(options);
       return response.data;
     } catch (err) {
-      if (err.response) throw err.response.data;
-      throw err;
+      if (err.response) return Promise.reject(err.response.data);
+      return Promise.reject({ errors: [{ msg: err.toString() }] });
     }
   },
 

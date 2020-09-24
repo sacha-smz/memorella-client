@@ -4,6 +4,7 @@ import { Switch, Route, Link, NavLink } from "react-router-dom";
 
 import DispatchIntended from "../containers/DispatchIntended";
 import SignupForm from "../containers/SignupForm";
+import SigninForm from "../containers/SigninForm";
 
 import "./App.scss";
 
@@ -19,14 +20,31 @@ const App = ({ user, auth, logout }) => {
         Le memory de Stella
         <nav>
           <ul>
-            <li>{!user.data && <NavLink to="/signup">Sign Up</NavLink>}</li>
-            <li>
-              {user.data && (
-                <Link to="/logout" onClick={logout}>
-                  Log out
-                </Link>
-              )}
-            </li>
+            {user.data ? (
+              <>
+                {user.data.is_admin && (
+                  <li>
+                    <NavLink to="/admin">Admin</NavLink>
+                  </li>
+                )}
+                {auth && (
+                  <li>
+                    <Link to="/logout" onClick={logout}>
+                      Log out
+                    </Link>
+                  </li>
+                )}
+              </>
+            ) : (
+              <>
+                <li>
+                  <NavLink to="/signup">Sign Up</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/signin">Sign In</NavLink>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </header>
@@ -34,6 +52,7 @@ const App = ({ user, auth, logout }) => {
       <main>
         <Switch>
           <Route path="/signup" component={SignupForm} />
+          <Route path="/signin" component={SigninForm} />
         </Switch>
       </main>
     </>

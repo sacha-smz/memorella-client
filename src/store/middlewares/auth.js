@@ -18,7 +18,7 @@ export default store => next => async action => {
       const { refresh } = auth;
 
       if (access && exp > Date.now()) {
-        action.payload.token = access;
+        action.payload = { token: access };
         return next(action);
       }
 
