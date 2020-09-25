@@ -1,0 +1,26 @@
+@use "../../styles/functions" as f;
+
+.card-thumb {
+  position: relative;
+  height: 140px;
+  width: auto;
+  flex-shrink: 0;
+  margin: 0.2em;
+
+  img {
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+  }
+
+  button {
+    position: absolute;
+    color: f.getColor("main", "secondary");
+    top: 0.05em;
+    right: 0.05em;
+
+    &:hover {
+      background-color: rgba(211, 211, 211, 0.3);
+    }
+  }
+}

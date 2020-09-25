@@ -1,0 +1,55 @@
+@use "../../styles/functions" as f;
+
+.new-deck {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .MuiTextField-root {
+      margin-bottom: 0.6em;
+      min-width: 300px;
+    }
+
+    .drop-container {
+      position: relative;
+      height: 40%;
+
+      .drop-zone {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        height: 100%;
+        padding: 0.2em;
+        overflow: auto;
+        background-color: f.getColor("bg", "light");
+        border: 2px dashed f.getColor("main", "primary");
+      }
+
+      .drop-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+
+        .MuiSvgIcon-root {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 5em;
+        }
+      }
+    }
+
+    .MuiButton-root {
+      margin: 0.4em auto 0;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 
-import App from "../components/App";
+import AdminRoute from "../components/AdminRoute";
 
 const mapStateToprops = ({ user, auth }) => ({ user, auth });
 
-export default connect(mapStateToprops)(App);
+export default connect(mapStateToprops)(AdminRoute);

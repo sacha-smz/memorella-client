@@ -1,7 +1,5 @@
 import { applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 
-import auth from "./auth";
-import user from "./user";
-
-export default composeWithDevTools(applyMiddleware(auth, user));
+export default composeWithDevTools(applyMiddleware(thunk));

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const http = {
-  fetch: async (url, options) => {
+  fetch: async (url, options = {}) => {
     options.url = process.env.REACT_APP_API_URL + url;
     options.method = options.method || "GET";
 

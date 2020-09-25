@@ -27,12 +27,8 @@ const AuthForm = ({ fields, formSubmit, clearError, user, title, submitText, mod
     formSubmit(formData);
   };
 
-  const handleToastClose = () => {
-    clearError();
-  };
-
   return (
-    <div className={"auth-form auth-form--" + modifier}>
+    <div className={"page-container auth-form auth-form--" + modifier}>
       <Typography component="h1" variant="h4">
         {title}
       </Typography>
@@ -93,7 +89,7 @@ const AuthForm = ({ fields, formSubmit, clearError, user, title, submitText, mod
         open={Boolean(user.alerts.length)}
         alerts={user.alerts}
         severity="error"
-        handleClose={handleToastClose}
+        handleClose={clearError}
       />
     </div>
   );
