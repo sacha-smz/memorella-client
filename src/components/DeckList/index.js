@@ -13,6 +13,8 @@ import {
   TableCell
 } from "@material-ui/core";
 
+import Page from "../Page";
+
 const fromNow = date => (date ? moment(date).fromNow() : "N/A");
 
 const displayFn = new Map([
@@ -27,7 +29,7 @@ const DeckList = ({ deck, fetchDecks }) => {
   }, [fetchDecks]);
 
   return deck.list && deck.list.length ? (
-    <div className="page-container">
+    <Page>
       <Typography component="h1" variant="h4">
         Deck list
       </Typography>
@@ -56,7 +58,7 @@ const DeckList = ({ deck, fetchDecks }) => {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </Page>
   ) : (
     <p>Empty deck list</p>
   );

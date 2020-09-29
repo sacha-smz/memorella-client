@@ -1,0 +1,17 @@
+.page-container {
+  height: 100%;
+
+  h1 {
+    margin-bottom: 0.6em;
+  }
+
+  form {
+    width: 100%;
+    max-width: 640px;
+    overflow-x: auto;
+
+    @media (min-width: 768px) {
+      width: 60%;
+    }
+  }
+}

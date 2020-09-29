@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Typography, TextField, Button } from "@material-ui/core";
 
+import Page from "../Page";
 import Toast from "../Toast";
 
 import "./AuthForm.scss";
@@ -28,7 +29,7 @@ const AuthForm = ({ fields, formSubmit, clearError, user, title, submitText, mod
   };
 
   return (
-    <div className={"page-container auth-form auth-form--" + modifier}>
+    <Page className={"auth-form auth-form--" + modifier}>
       <Typography component="h1" variant="h4">
         {title}
       </Typography>
@@ -91,7 +92,7 @@ const AuthForm = ({ fields, formSubmit, clearError, user, title, submitText, mod
         severity="error"
         handleClose={clearError}
       />
-    </div>
+    </Page>
   );
 };
 

@@ -4,6 +4,7 @@ import { useDropzone } from "react-dropzone";
 import { Typography, TextField, Button } from "@material-ui/core";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
 
+import Page from "../Page";
 import CardThumb from "./CardThumb";
 
 import "./NewDeck.scss";
@@ -102,7 +103,7 @@ const NewDeck = ({ deckSubmit }) => {
   );
 
   return (
-    <div className="page-container new-deck">
+    <Page className="new-deck">
       <form onSubmit={onSubmit} encType="multipart/form-data">
         <Typography component="h1" variant="h4">
           New deck
@@ -136,7 +137,7 @@ const NewDeck = ({ deckSubmit }) => {
           Valider
         </Button>
       </form>
-    </div>
+    </Page>
   );
 };
 
