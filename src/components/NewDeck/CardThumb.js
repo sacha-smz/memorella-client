@@ -1,49 +1,46 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 
 import "./CardThumb.scss";
 
-const CardThumb = ({ card, removeCard, setCardImgRef }) => {
-  const [draggedCard, setDraggedCard] = useState(null);
+const CardThumb = ({ image, removeCard, addImageRef }) => {
   const imgRef = useRef(null);
 
-  useEffect(() => {
-    setCardImgRef(card.file.name, imgRef);
-  }, [setCardImgRef, card.file.name]);
+  const { id, file, objectURL, url } = image;
+  const key = id || file.name;
 
-  const handleDragStart = useCallback(() => {
-    setDraggedCard(card.file.name);
-  }, [card.file.name]);
+  useEffect(() => {
+    if (addImageRef) {
+      addImageRef({ key, ref: imgRef });
+    }
+  }, [addImageRef, key]);
+
+  const remove = useCallback(() => {
+    removeCard(key);
+  }, [removeCard, key]);
 
   const handleDragEnd = useCallback(
     evt => {
       if (evt.dataTransfer.dropEffect === "move") {
-        removeCard(draggedCard);
+        remove();
       }
-      setDraggedCard(null);
     },
-    [draggedCard, removeCard]
+    [remove]
   );
 
   return (
     <div className="card-thumb">
-      <IconButton
-        aria-label="close"
-        onClick={() => {
-          removeCard(card.file.name);
-        }}
-      >
+      <IconButton aria-label="close" onClick={remove}>
         <HighlightOffIcon />
       </IconButton>
 
       <img
-        src={card.objectURL}
-        alt={card.file.name}
+        src={objectURL || `${process.env.REACT_APP_FILES_URL}/${url}`}
+        alt={id ? "Memory card" : key}
         draggable="true"
         onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
         ref={imgRef}
       />
     </div>

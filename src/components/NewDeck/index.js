@@ -1,5 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useReducer, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
+
+import { imageRefsReducer } from "./state/reducers";
+import { addRef, removeRef } from "./state/actions";
 
 import { Typography, TextField, Button } from "@material-ui/core";
 import PhotoLibraryIcon from "@material-ui/icons/PhotoLibrary";
@@ -9,47 +13,80 @@ import CardThumb from "./CardThumb";
 
 import "./NewDeck.scss";
 
-const NewDeck = ({ deckSubmit }) => {
-  const [deckName, setDeckName] = useState("");
-  const [cards, setCards] = useState(new Map());
+const NewDeck = ({ fetchDeck, deckSubmit, decks }) => {
+  const id = parseInt(useParams().id, 10);
+  const oldDeck = useMemo(() => decks.find(deck => deck.id === id), [decks, id]);
 
-  useEffect(() => () => {
-    for (const card of cards.values()) {
-      URL.revokeObjectURL(card.objectURL);
+  const [deckName, setDeckName] = useState("");
+  const [images, setImages] = useState(new Map());
+  const [oldImages, setOldImages] = useState([]);
+  const [removedCards, setRemovedCards] = useState([]);
+
+  const [imageRefs, dispatchImageRefs] = useReducer(imageRefsReducer);
+
+  useEffect(() => {
+    if (oldDeck) {
+      setDeckName(oldDeck.name);
+      setOldImages(oldDeck.cards);
+    } else if (id) {
+      fetchDeck(id);
     }
-  });
+  }, [id, oldDeck, fetchDeck]);
+
+  useEffect(
+    () => () => {
+      for (const image of images.values()) {
+        URL.revokeObjectURL(image.objectURL);
+      }
+    },
+    [images]
+  );
 
   const handleChange = useCallback(evt => {
     setDeckName(evt.target.value);
   }, []);
 
+  const addImageRef = useCallback(payload => {
+    dispatchImageRefs(addRef(payload));
+  }, []);
+
+  const removeImageRef = useCallback(payload => {
+    dispatchImageRefs(removeRef(payload));
+  }, []);
+
   const removeCard = useCallback(
-    name => {
-      URL.revokeObjectURL(cards.get(name).objectURL);
-      const newCards = new Map(cards);
-      newCards.delete(name);
-      setCards(newCards);
+    key => {
+      URL.revokeObjectURL(images.get(key).objectURL);
+      const newImages = new Map(images);
+      newImages.delete(key);
+      setImages(newImages);
+      removeImageRef(key);
     },
-    [cards]
+    [images, removeImageRef]
   );
 
-  const setCardImgRef = useCallback(
-    (name, imgRef) => {
-      const newCards = new Map(cards);
-      newCards.get(name).imgRef = imgRef;
+  const removeOldCard = useCallback(
+    id => {
+      const oldImageIndex = oldImages.findIndex(image => image.id === id);
+      if (oldImageIndex > -1) {
+        const newOldImages = [...oldImages];
+        newOldImages.splice(oldImageIndex, 1);
+        setOldImages(newOldImages);
+        setRemovedCards([...removedCards, id]);
+      }
     },
-    [cards]
+    [oldImages, removedCards]
   );
 
   const onDrop = useCallback(
     files => {
-      const newCards = new Map(cards);
+      const newImages = new Map(images);
       for (const file of files) {
-        newCards.set(file.name, { file, objectURL: URL.createObjectURL(file) });
+        newImages.set(file.name, { file, objectURL: URL.createObjectURL(file) });
       }
-      setCards(newCards);
+      setImages(newImages);
     },
-    [cards]
+    [images]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -60,16 +97,18 @@ const NewDeck = ({ deckSubmit }) => {
   });
 
   const onSubmit = useCallback(
-    evt => {
+    async evt => {
       evt.preventDefault();
 
       const formData = new FormData();
+
       formData.set("name", deckName);
-      for (const card of cards.values()) {
+
+      for (const image of images.values()) {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
-        const img = card.imgRef.current;
+        const img = imageRefs.get(image.file.name).current;
 
         const [imgWidth, imgHeight] = [img.naturalWidth, img.naturalHeight];
         const length = Math.min(imgWidth, imgHeight);
@@ -89,17 +128,20 @@ const NewDeck = ({ deckSubmit }) => {
         );
 
         const mimetype = "image/jpeg";
-        canvas.toBlob(
-          blob => {
-            formData.append("cards[]", new File([blob], card.file.name, { type: mimetype }));
-          },
-          mimetype,
-          0.8
-        );
+        const blob = await toBlob(canvas, mimetype, 0.8);
+        formData.append("cards[]", new File([blob], image.file.name, { type: mimetype }));
       }
-      deckSubmit(formData);
+
+      if (id) {
+        removedCards.forEach(cardId => {
+          formData.append("removed_cards[]", cardId);
+        });
+      }
+
+      setImages(new Map());
+      deckSubmit({ id, data: formData });
     },
-    [cards, deckName, deckSubmit]
+    [deckName, images, imageRefs, removedCards, deckSubmit, id]
   );
 
   return (
@@ -108,7 +150,6 @@ const NewDeck = ({ deckSubmit }) => {
         <Typography component="h1" variant="h4">
           New deck
         </Typography>
-
         <TextField
           value={deckName}
           label="Deck name"
@@ -121,8 +162,11 @@ const NewDeck = ({ deckSubmit }) => {
 
         <div className="drop-container">
           <div className="drop-zone" {...getRootProps()}>
-            {Array.from(cards.values()).map(card => (
-              <CardThumb key={card.file.name} {...{ card, removeCard, setCardImgRef }} />
+            {oldImages.map(image => (
+              <CardThumb key={image.id} image={image} removeCard={removeOldCard} />
+            ))}
+            {Array.from(images.values()).map(image => (
+              <CardThumb key={image.file.name} {...{ image, removeCard, addImageRef }} />
             ))}
           </div>
 
@@ -130,9 +174,7 @@ const NewDeck = ({ deckSubmit }) => {
             <PhotoLibraryIcon color={isDragActive ? "primary" : "action"} fontSize="large" />
           </div>
         </div>
-
         <input {...getInputProps()} />
-
         <Button variant="contained" color="primary" size="large" type="submit">
           Valider
         </Button>
@@ -142,3 +184,15 @@ const NewDeck = ({ deckSubmit }) => {
 };
 
 export default NewDeck;
+
+function toBlob(canvas, type, quality) {
+  return new Promise(resolve => {
+    canvas.toBlob(
+      blob => {
+        resolve(blob);
+      },
+      type,
+      quality
+    );
+  });
+}

@@ -79,7 +79,7 @@ const App = ({ user, auth, locations, locationChange }) => {
 
       <HistoryNav locations={locations} />
 
-      <main>
+      <main className="main-container">
         <Switch>
           <Route exact path="/">
             <p>Accueil</p>
@@ -95,6 +95,9 @@ const App = ({ user, auth, locations, locationChange }) => {
             <DeckList />
           </AdminRoute>
           <AdminRoute path="/admin/decks/new">
+            <NewDeck />
+          </AdminRoute>
+          <AdminRoute path="/admin/decks/:id">
             <NewDeck />
           </AdminRoute>
 

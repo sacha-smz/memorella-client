@@ -1,9 +1,10 @@
 import { connect } from "react-redux";
 
-import { deckSubmit } from "../store/actions/deck";
+import { fetchDeck, deckSubmit } from "../store/actions/deck";
 
 import NewDeck from "../components/NewDeck";
 
-const mapDispatchToProps = { deckSubmit };
+const mapStateToProps = ({ deck }) => ({ decks: deck.list });
+const mapDispatchToProps = { fetchDeck, deckSubmit };
 
-export default connect(null, mapDispatchToProps)(NewDeck);
+export default connect(mapStateToProps, mapDispatchToProps)(NewDeck);

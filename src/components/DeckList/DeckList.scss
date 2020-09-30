@@ -1,0 +1,16 @@
+.deck-list {
+  .table-toolbar {
+    button {
+      margin-left: auto;
+      font-size: 3em;
+    }
+  }
+
+  .table-container {
+    margin-top: 0.4rem;
+
+    .MuiTableRow-hover {
+      cursor: pointer;
+    }
+  }
+}
