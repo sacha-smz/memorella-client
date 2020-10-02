@@ -7,7 +7,7 @@ const initialState = {
 export default (state = initialState, { type, payload } = {}) => {
   switch (type) {
     case FETCH_DECKS_SUCCESS:
-      return { ...state, list: [...payload] };
+      return { ...state, list: [...payload], lastFetch: Date.now() };
     case ADD_DECK:
       const list = [...state.list];
       const deckIndex = list.findIndex(deck => deck.id === payload.id);

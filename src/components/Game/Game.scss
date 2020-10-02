@@ -1,0 +1,14 @@
+.game-board {
+  .MuiFormControl-root {
+    min-width: 240px;
+  }
+
+  .grid {
+    padding: 0.2rem;
+
+    &__row {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

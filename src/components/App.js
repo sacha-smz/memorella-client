@@ -7,6 +7,7 @@ import AdminRoute from "../containers/AdminRoute";
 import Logout from "../containers/Logout";
 import SignupForm from "../containers/SignupForm";
 import SigninForm from "../containers/SigninForm";
+import Game from "../containers/Game";
 import NewDeck from "../containers/NewDeck";
 import DeckList from "../containers/DeckList";
 
@@ -81,9 +82,7 @@ const App = ({ user, auth, locations, locationChange }) => {
 
       <main className="main-container">
         <Switch>
-          <Route exact path="/">
-            <p>Accueil</p>
-          </Route>
+          <Route exact path="/" component={Game} />
           <Route path="/signup" component={SignupForm} />
           <Route path="/signin" component={SigninForm} />
 

@@ -36,7 +36,9 @@ export const deckSubmit = ({ id, data }) =>
 export const FETCH_DECKS_SUCCESS = "FETCH_DECKS_SUCCESS";
 const fetchDecksSuccess = payload => ({ type: FETCH_DECKS_SUCCESS, payload });
 
-export const fetchDecks = () => async dispatch => {
+export const fetchDecks = () => async (dispatch, getState) => {
+  if (Date.now() - getState().deck.lastFetch < 60 * 1000) return;
+
   try {
     const response = await http.get("/decks");
     dispatch(fetchDecksSuccess(response.data));

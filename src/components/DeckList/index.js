@@ -28,12 +28,12 @@ const displayFn = new Map([
   ["cards", cards => cards.length]
 ]);
 
-const DeckList = ({ deck, fetchDecks }) => {
+const DeckList = ({ decks, fetchDecks }) => {
   useEffect(() => {
     fetchDecks();
   }, [fetchDecks]);
 
-  return deck.list && deck.list.length ? (
+  return (
     <Page className="deck-list">
       <Toolbar classes={{ root: "table-toolbar" }}>
         <Typography component="h1" variant="h6">
@@ -46,35 +46,35 @@ const DeckList = ({ deck, fetchDecks }) => {
         </Link>
       </Toolbar>
 
-      <TableContainer classes={{ root: "table-container" }} component={Paper}>
-        <Table size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              {Object.keys(deck.list[0]).map(field => (
-                <TableCell key={field} align="center">
-                  {field}
-                </TableCell>
+      {decks && decks.length > 0 && (
+        <TableContainer classes={{ root: "table-container" }} component={Paper} elevation={3}>
+          <Table size="small" aria-label="a dense table">
+            <TableHead>
+              <TableRow>
+                {Object.keys(decks[0]).map(field => (
+                  <TableCell key={field} align="center">
+                    {field}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {decks.map(currDeck => (
+                <Link key={currDeck.id} to={"/admin/decks/" + currDeck.id}>
+                  <TableRow hover>
+                    {Object.entries(currDeck).map(([key, val]) => (
+                      <TableCell key={key} align="center">
+                        {displayFn.has(key) ? displayFn.get(key)(val) : val}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </Link>
               ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {deck.list.map(currDeck => (
-              <Link key={currDeck.id} to={"/admin/decks/" + currDeck.id}>
-                <TableRow hover>
-                  {Object.entries(currDeck).map(([key, val]) => (
-                    <TableCell key={key} align="center">
-                      {displayFn.has(key) ? displayFn.get(key)(val) : val}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </Link>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Page>
-  ) : (
-    <p>Empty deck list</p>
   );
 };
 
