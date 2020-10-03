@@ -11,18 +11,33 @@
     top: 0;
     left: 0;
     overflow: hidden;
-    transform: rotateY(90deg);
-    transition: 500ms;
-
-    &.face-up {
-      transform: rotateY(0);
-      transition-delay: 500ms;
-    }
+    transition: transform 400ms;
 
     img {
       width: 100%;
       height: auto;
       object-fit: cover;
+    }
+  }
+
+  .front {
+    transform: rotateY(90deg);
+    transition-delay: 0ms;
+  }
+
+  .back {
+    transform: rotateY(0);
+    transition-delay: 400ms;
+  }
+
+  &.face-up {
+    .front {
+      transform: rotateY(0);
+      transition-delay: 400ms;
+    }
+    .back {
+      transform: rotateY(90deg);
+      transition-delay: 0ms;
     }
   }
 }

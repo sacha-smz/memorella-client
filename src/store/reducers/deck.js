@@ -12,12 +12,11 @@ export default (state = initialState, { type, payload } = {}) => {
       const list = [...state.list];
       const deckIndex = list.findIndex(deck => deck.id === payload.id);
       if (deckIndex > -1) {
-        const { cards: oldCards } = list[deckIndex];
         const { removedCards, cards: newCards } = payload;
 
-        let cards = [];
+        let cards = [...list[deckIndex].cards];
         if (removedCards && removedCards.length) {
-          cards = oldCards.filter(({ id }) => !removedCards.includes(id));
+          cards = cards.filter(({ id }) => !removedCards.includes(id));
         }
         if (newCards && newCards.length) {
           cards.push(...newCards);

@@ -10,6 +10,9 @@ import "./Game.scss";
 const Game = ({ decks, fetchDecks }) => {
   const [deck, setDeck] = useState({ id: "", name: "" });
   const [rows, setRows] = useState([]);
+  const [foundCards, setFoundCards] = useState(new Set());
+  const [pair, setPair] = useState([]);
+  const [showdown, setShowdown] = useState(null);
 
   useEffect(() => {
     fetchDecks();
@@ -17,6 +20,9 @@ const Game = ({ decks, fetchDecks }) => {
 
   const handleChange = useCallback(
     evt => {
+      setPair([]);
+      setFoundCards(new Set());
+
       const deckId = parseInt(evt.target.value, 10);
       const newDeck = decks.find(deck => deck.id === deckId);
       const { id, name, cards } = newDeck;
@@ -24,6 +30,43 @@ const Game = ({ decks, fetchDecks }) => {
       setRows(getRows(getShuffledPairs(cards)));
     },
     [decks]
+  );
+
+  const faceUp = useCallback(
+    (uniqueId, sharedId) => {
+      return pair.some(card => card.uniqueId === uniqueId) || foundCards.has(sharedId);
+    },
+    [pair, foundCards]
+  );
+
+  const handleCardClick = useCallback(
+    (uniqueId, sharedId) => {
+      if (faceUp(uniqueId, sharedId)) return;
+
+      if (showdown) {
+        clearTimeout(showdown);
+        setShowdown(null);
+      }
+
+      if (pair.length === 1) {
+        if (sharedId === pair[0].sharedId) {
+          const newFoundCards = new Set(foundCards);
+          newFoundCards.add(sharedId);
+          setFoundCards(newFoundCards);
+        } else {
+          setShowdown(
+            setTimeout(() => {
+              setPair([]);
+            }, 2400)
+          );
+        }
+
+        setPair([pair[0], { sharedId, uniqueId }]);
+      } else {
+        setPair([{ sharedId, uniqueId }]);
+      }
+    },
+    [faceUp, showdown, pair, foundCards]
   );
 
   return (
@@ -48,9 +91,19 @@ const Game = ({ decks, fetchDecks }) => {
         <div className="grid">
           {rows.map((row, i) => (
             <div className="grid__row" key={i}>
-              {row.map(({ key, id, url }) => (
-                <MemoryCard url={url} key={key || id} />
-              ))}
+              {row.map(({ key, id, url }) => {
+                const uniqueId = key || id;
+                return (
+                  <MemoryCard
+                    key={uniqueId}
+                    uniqueId={uniqueId}
+                    sharedId={id}
+                    url={url}
+                    handleClick={handleCardClick}
+                    faceUp={faceUp(uniqueId, id)}
+                  />
+                );
+              })}
             </div>
           ))}
         </div>
